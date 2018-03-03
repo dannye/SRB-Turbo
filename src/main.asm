@@ -3,7 +3,7 @@ include "constants.asm"
 
 section "Main", rom0
 
-START_TILE = 0
+START_TILE = $80
 X = 5
 Y = 7
 HEIGHT = 4
@@ -17,7 +17,7 @@ Main::
 
 .Setup:
 	ld bc, .Graphics
-	ld de, vChars2
+	ld de, vChars1
 	ld a, WIDTH * HEIGHT
 	call QueueGfx
 
