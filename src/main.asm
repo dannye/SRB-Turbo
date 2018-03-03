@@ -1,5 +1,7 @@
 include "constants.asm"
 
+section "titlescreen", wram0
+wFlameCounter: ds 1
 
 section "Main", rom0
 
@@ -12,11 +14,45 @@ DIFFICULTY_WIDTH = 8
 Main::
 	; load title screen graphics
 	call SetPalette	
+	call DisableLCD
 	call LoadTitleGraphics
 	call LoadTitle2Graphics
 	call LoadStartGraphics
+	call LoadFlames
+	call EnableLCD
+	xor a
+	ld [wFlameCounter], a
 .titleLoop
 	call WaitVBlank
+	
+	ld a, [wFlameCounter]
+	inc a
+	ld [wFlameCounter], a
+	cp 10
+	jr c, .noAnimate
+	xor a
+	ld [wFlameCounter], a
+	
+	ld a, [wOAM + 2]
+	and a
+	ld b, $1e
+	jr z, .frame1
+	ld b, -$1e
+.frame1
+	ld c, 40
+	ld hl, wOAM + 2
+.flameLoop
+	ld a, [hl]
+	add b
+	ld [hl], a
+	inc hl
+	inc hl
+	inc hl
+	inc hl
+	dec c
+	jr nz, .flameLoop
+	
+.noAnimate
 	; check for A or start
 	call Joypad
 	ld a, [wJoyPressed]

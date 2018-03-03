@@ -87,6 +87,7 @@ endc
 
 	halt
 
+	call WriteDMATransferToHRAM
 	call Main
 
 	; if Main returns, restart the program

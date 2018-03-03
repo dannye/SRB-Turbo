@@ -24,6 +24,7 @@ VBlank:
 	push bc
 	push de
 	push hl
+	call $ff80
 
 	call LoadGfxQueue
 	call nc, RunCallbacks
