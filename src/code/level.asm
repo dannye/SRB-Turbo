@@ -32,6 +32,7 @@ LevelScreen::
 	call WaitVBlank
 	callback ToggleIcons
 	callback DrawScore
+	callback DrawStreak
 
 .checkNotesLoop
 	ld a, [wNextNote]
@@ -124,6 +125,7 @@ LevelScreen::
 	ld [hli], a
 	ld [hli], a
 	ld [hli], a
+	ld [wStreak], a
 	jr .skipInc
 .skipAdvance
 	inc hl
@@ -210,8 +212,7 @@ NoteInHitbox:
 	ld [hli], a
 	ld [hli], a
 	ld a, [wStreak]
-	inc a
-	ld [wStreak], a
+	call IncrementStreak
 	call IncrementScore
 	ret
 .no
@@ -256,6 +257,27 @@ IncrementScore:
 	ld [wScore], a
 	ret
 
+IncrementStreak:
+	ld a, [wStreak]
+	and $0F
+	cp 9
+	jr nc, .doCarry
+	inc a
+	ld b, a
+	ld a, [wStreak]
+	and $F0
+	or b
+	ld [wStreak], a
+	ret
+.doCarry
+	ld a, [wStreak]
+	cp $90
+	ret nc
+	and $F0
+	add $10
+	ld [wStreak], a
+	ret
+
 DrawScore:
 	ld hl, $986F
 	ld a, [wScore]
@@ -278,48 +300,21 @@ DrawScore:
 	ld [hli], a
 	ret
 
+DrawStreak:
+	ld hl, $98D1
+	ld a, [wStreak]
+	and $F0
+	swap a
+	add $F0
+	ld [hli], a
+	ld a, [wStreak]
+	and $0F
+	add $F0
+	ld [hli], a
+	ret
+
 Level1Notes:
 	db D_LEFT, 80
-	db D_UP, 0
-	db D_RIGHT, 0
-	db D_DOWN, 0
-	db B_BUTTON, 0
-	db A_BUTTON, 0
-	db D_LEFT, 20
-	db D_UP, 0
-	db D_RIGHT, 0
-	db D_DOWN, 0
-	db B_BUTTON, 0
-	db A_BUTTON, 0
-	db D_LEFT, 20
-	db D_UP, 0
-	db D_RIGHT, 0
-	db D_DOWN, 0
-	db B_BUTTON, 0
-	db A_BUTTON, 0
-	db D_LEFT, 20
-	db D_UP, 0
-	db D_RIGHT, 0
-	db D_DOWN, 0
-	db B_BUTTON, 0
-	db A_BUTTON, 0
-	db D_LEFT, 20
-	db D_UP, 0
-	db D_RIGHT, 0
-	db D_DOWN, 0
-	db B_BUTTON, 0
-	db A_BUTTON, 0
-	db D_LEFT, 20
-	db D_UP, 0
-	db D_RIGHT, 0
-	db D_DOWN, 0
-	db B_BUTTON, 0
-	db A_BUTTON, 0
-	db D_LEFT, 20
-	db D_UP, 0
-	db D_RIGHT, 0
-	db D_DOWN, 0
-	db B_BUTTON, 0
 	db A_BUTTON, 0
 	db B_BUTTON, 20
 	db D_UP, 20
@@ -509,6 +504,10 @@ LoadLevelGraphics:
 	ld hl, NoteGraphics
 	ld de, vChars0
 	call CopyData
+	ld bc, ScoreStreakGraphicsEnd - ScoreStreakGraphics
+	ld hl, ScoreStreakGraphics
+	ld de, vChars1 + (LevelGraphics2End - LevelGraphics)
+	call CopyData
 	ld bc, DigitsGraphicsEnd - DigitsGraphics
 	ld hl, DigitsGraphics
 	ld de, $8f00
@@ -517,7 +516,7 @@ LoadLevelGraphics:
 	call DrawLevelTiles
 	
 	ld hl, vBGMap0 + 32 * 2 + 16
-	ld a, $FA
+	ld a, $E6
 	ld [hli], a
 	inc a
 	ld [hli], a
@@ -528,6 +527,21 @@ LoadLevelGraphics:
 	ld a, $F0
 	ld [hld], a
 	ld [hld], a
+	ld [hld], a
+	ld [hld], a
+
+	ld hl, vBGMap0 + 32 * 5 + 15
+	ld a, $E9
+	ld [hli], a
+	inc a
+	ld [hli], a
+	inc a
+	ld [hli], a
+	inc a
+	ld [hl], a
+	ld de, 32
+	add hl, de
+	ld a, $F0
 	ld [hld], a
 	ld [hld], a
 	
@@ -587,3 +601,7 @@ NoteGraphicsEnd:
 DigitsGraphics:
 	INCBIN "gfx/digits.2bpp"
 DigitsGraphicsEnd:
+
+ScoreStreakGraphics:
+	INCBIN "gfx/scorestreak.2bpp"
+ScoreStreakGraphicsEnd:
