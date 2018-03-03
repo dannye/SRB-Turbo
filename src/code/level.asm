@@ -13,8 +13,7 @@ LevelScreen::
 	call DisableLCD
 	call LoadLevelGraphics
 	call EnableLCD
-	xor a
-	call PlaySound
+	call InitSound
 	ld hl, Level1Notes
 	ld a, [hli]
 	ld [wNextNote], a
@@ -33,6 +32,7 @@ LevelScreen::
 	callback ToggleIcons
 	callback DrawScore
 	callback DrawStreak
+	callback PlaySound
 
 .checkNotesLoop
 	ld a, [wNextNote]
