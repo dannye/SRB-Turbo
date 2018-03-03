@@ -1,4 +1,4 @@
-section "Difficulty wram", wramx
+section "Difficulty wram", wram0
 wCurSelection:: ds 1
 
 section "Difficulty", rom0
@@ -71,6 +71,11 @@ GetDifficultySelection::
 	ld a, [wJoyPressed]
 	and B_BUTTON
 	jr z, .noB
+	xor a
+	ld hl, wOAM
+	ld [hli], a
+	ld [hli], a
+	ld [hli], a
 	scf
 	ret
 .noB
@@ -78,6 +83,11 @@ GetDifficultySelection::
 	and A_BUTTON
 	jr z, .noA
 	ld a, [wCurSelection]
+	xor a
+	ld hl, wOAM
+	ld [hli], a
+	ld [hli], a
+	ld [hli], a
 	scf
 	ccf
 	ret

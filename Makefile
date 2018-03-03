@@ -11,7 +11,7 @@ clean:
 	@rm -f $(obj) $(name).gb $(name).sym
 
 gfx:
-	@find -iname "*.png" -exec sh -c 'rgbgfx -o $${1%.png}.2bpp $$1' _ {} \;
+	@find . -iname "*.png" -exec sh -c 'rgbgfx -o $${1%.png}.2bpp $$1' _ {} \;
 
 .asm.o:
 	@rgbasm -i $(src)/ -o $@ $<
