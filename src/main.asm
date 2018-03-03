@@ -4,41 +4,64 @@ include "constants.asm"
 section "Main", rom0
 
 START_TILE = $80
-X = 5
-Y = 7
-HEIGHT = 4
-WIDTH = 10
+DIFFICULTY_X = 5
+DIFFICULTY_Y = 7
+DIFFICULTY_HEIGHT = 8
+DIFFICULTY_WIDTH = 8
 
 Main::
-	call .Setup
-.loop
+	; load title screen graphics
+	call SetPalette	
+	call LoadTitleGraphics
+	call LoadTitle2Graphics
+	call LoadStartGraphics
+.titleLoop
 	call WaitVBlank
-	jr .loop
-
-.Setup:
-	ld bc, .Graphics
+	; check for A or start
+	call Joypad
+	ld a, [wJoyPressed]
+	and A_BUTTON + START
+	; not pressed, do nothing
+	jr z, .titleLoop
+	; A or start was pressed, exit title screen
+	; load difficult selection screen
+	ld bc, 32 * 32
+	ld hl, vBGMap0
+	xor a
+	call DisableLCD
+	call ClearTilemap
+	ld bc, DifficultyGraphicsEnd - DifficultyGraphics
+	ld hl, DifficultyGraphics
 	ld de, vChars1
-	ld a, WIDTH * HEIGHT
+	call CopyData
+	call DrawDifficultyTilemap
+	call EnableLCD
+.difficultyLoop
+	call WaitVBlank
+	jr .difficultyLoop
+
+LoadDifficultyGraphics:
+	ld bc, DifficultyGraphics
+	ld de, vChars1
+	ld a, DIFFICULTY_WIDTH * DIFFICULTY_HEIGHT
 	call QueueGfx
 
-	callback .DrawTilemap
+	callback DrawDifficultyTilemap
 
-	call .SetPalette
-	ret
-
-.DrawTilemap:
-	ld hl, vBGMap0 + BG_WIDTH * Y + X
+DrawDifficultyTilemap:
+	ld hl, vBGMap0 + BG_WIDTH * DIFFICULTY_Y + DIFFICULTY_X
 	ld a, START_TILE
-	ld b, HEIGHT
-	ld c, WIDTH
+	ld b, DIFFICULTY_HEIGHT
+	ld c, DIFFICULTY_WIDTH
 	jp DrawTilemapRect
 
-.SetPalette:
+SetPalette:
 	ld a, %11100100 ; quaternary: 3210
 	ld [rOBP0], a
 	ld [rOBP1], a
 	ld [rBGP], a
 	ret
 
-.Graphics:
-	INCBIN "gfx/hello_world.2bpp"
+DifficultyGraphics:
+	INCBIN "gfx/difficulty.2bpp"
+DifficultyGraphicsEnd:
