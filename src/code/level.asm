@@ -70,10 +70,10 @@ LevelScreen::
 	cp D_UP
 	ld b, 16*2 + 8
 	jr z, .cont
-	cp D_RIGHT
+	cp D_DOWN
 	ld b, 16*3 + 8
 	jr z, .cont
-	cp D_DOWN
+	cp D_RIGHT
 	ld b, 16*4 + 8
 	jr z, .cont
 	cp B_BUTTON
@@ -154,17 +154,17 @@ LevelScreen::
 	
 .skip2
 	ld a, [wJoyPressed]
-	bit D_RIGHT_F, a
+	bit D_DOWN_F, a
 	jr z, .skip3
-	; check if note in up hitbox
+	; check if note in down hitbox
 	ld a, 16*3 + 8
 	call NoteInHitbox
 	
 .skip3
 	ld a, [wJoyPressed]
-	bit D_DOWN_F, a
+	bit D_RIGHT_F, a
 	jr z, .skip4
-	; check if note in up hitbox
+	; check if note in right hitbox
 	ld a, 16*4 + 8
 	call NoteInHitbox
 	
@@ -172,7 +172,7 @@ LevelScreen::
 	ld a, [wJoyPressed]
 	bit B_BUTTON_F, a
 	jr z, .skip5
-	; check if note in up hitbox
+	; check if note in b hitbox
 	ld a, 16*5 + 8
 	call NoteInHitbox
 	
@@ -180,7 +180,7 @@ LevelScreen::
 	ld a, [wJoyPressed]
 	bit A_BUTTON_F, a
 	jr z, .skip6
-	; check if note in up hitbox
+	; check if note in a hitbox
 	ld a, 16*6 + 8
 	call NoteInHitbox
 	
@@ -413,7 +413,7 @@ ToggleIcons:
 	inc bc
 	inc bc
 	ld a, [wJoy]
-	bit D_RIGHT_F, a
+	bit D_DOWN_F, a
 	jr z, .released3
 	ld a, $33
 	jr .skip3
@@ -425,7 +425,7 @@ ToggleIcons:
 	inc bc
 	inc bc
 	ld a, [wJoy]
-	bit D_DOWN_F, a
+	bit D_RIGHT_F, a
 	jr z, .released4
 	ld a, $33
 	jr .skip4
