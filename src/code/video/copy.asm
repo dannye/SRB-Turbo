@@ -25,7 +25,6 @@ DrawTilemapRect::
 
 	ret
 
-
 ClearTilemap::
 	ld hl, vBGMap0 ; + BG_WIDTH * TITLE_Y + TITLE_X
 	ld a, 0 ; START_TILE

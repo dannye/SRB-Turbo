@@ -15,6 +15,7 @@ LevelScreen::
 	call LoadLevelGraphics
 	call EnableLCD
 	xor a
+	call PlaySound
 .loop
 	call WaitVBlank
 	jr .loop	

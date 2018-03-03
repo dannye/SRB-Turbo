@@ -20,7 +20,6 @@ Main::
 	ld [wDifficulty], a
 	call LevelScreen
 
-
 SetPalette:
 	ld a, %11100100 ; quaternary: 3210
 	ld [rOBP0], a
