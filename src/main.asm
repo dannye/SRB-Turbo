@@ -1,7 +1,6 @@
 include "constants.asm"
 
 section "Main wram", wramx
-wDifficulty: ds 1
 
 section "Main", rom0
 
@@ -17,7 +16,6 @@ Main::
 	
 	call GetDifficultySelection
 	jr c, Main
-	ld [wDifficulty], a
 	call LevelScreen
 
 SetPalette:

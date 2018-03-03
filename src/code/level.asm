@@ -1,4 +1,5 @@
 section "level wram", wram0
+wDifficulty: ds 1
 wNotePtr: ds 2
 wNextNote: ds 1
 wDelay: ds 1
@@ -8,6 +9,7 @@ wStreak: ds 1
 section "levelscreen", rom0
 
 LevelScreen::
+	ld [wDifficulty], a
 	call DisableLCD
 	call LoadLevelGraphics
 	call EnableLCD
@@ -29,6 +31,7 @@ LevelScreen::
 .loop
 	call WaitVBlank
 	callback ToggleIcons
+	callback DrawScore
 
 .checkNotesLoop
 	ld a, [wNextNote]
@@ -209,6 +212,7 @@ NoteInHitbox:
 	ld a, [wStreak]
 	inc a
 	ld [wStreak], a
+	call IncrementScore
 	ret
 .no
 	inc hl
@@ -220,6 +224,58 @@ NoteInHitbox:
 	jr nz, .loop
 	xor a
 	ld [wStreak], a
+	ret
+
+IncrementScore:
+	ld a, [wScore + 1]
+	cp $90
+	jr nc, .doCarry
+	add $10
+	ld [wScore + 1], a
+	ret
+.doCarry
+	xor a
+	ld [wScore + 1], a
+	ld a, [wScore]
+	and $0F
+	cp 9
+	jr nc, .doCarry2
+	inc a
+	ld b, a
+	ld a, [wScore]
+	and $F0
+	or b
+	ld [wScore], a
+	ret
+.doCarry2
+	ld a, [wScore]
+	cp $90
+	ret nc
+	and $F0
+	add $10
+	ld [wScore], a
+	ret
+
+DrawScore:
+	ld hl, $986F
+	ld a, [wScore]
+	and $F0
+	swap a
+	add $F0
+	ld [hli], a
+	ld a, [wScore]
+	and $0F
+	add $F0
+	ld [hli], a
+	ld a, [wScore + 1]
+	and $F0
+	swap a
+	add $F0
+	ld [hli], a
+	ld a, [wScore + 1]
+	and $0F
+	add $F0
+	ld [hli], a
 	ret
 
 Level1Notes:
