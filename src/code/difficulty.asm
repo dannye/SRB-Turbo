@@ -34,13 +34,14 @@ GetDifficultySelection::
 	xor a
 	ld [hli], a
 	ld [hli], a
+	ld [wCurSelection], a
 	call EnableLCD
 .difficultyLoop
 	call WaitVBlank
 	call Joypad
 	ld a, [wJoyPressed]
-	and D_UP
-	jr nz, .noUp
+	and D_DOWN
+	jr nz, .noDown
 	ld a, [wCurSelection]
 	dec a
 	cp -1
@@ -48,10 +49,10 @@ GetDifficultySelection::
 	ld a, 2
 .noWrap
 	ld [wCurSelection], a
-.noUp
+.noDown
 	ld a, [wJoyPressed]
-	and D_DOWN
-	jr nz, .noDown
+	and D_UP
+	jr nz, .noUp
 	ld a, [wCurSelection]
 	inc a
 	cp 3
@@ -59,7 +60,7 @@ GetDifficultySelection::
 	xor a
 .noWrap2
 	ld [wCurSelection], a
-.noDown
+.noUp
 	ld a, [wCurSelection]
 	ld d, a
 	ld e, 16

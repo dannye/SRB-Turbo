@@ -20,8 +20,12 @@ LevelScreen::
 	ld [wNotePtr], a
 	ld a, h
 	ld [wNotePtr + 1], a
+	call WaitVBlank
 .loop
 	call WaitVBlank
+
+	callback ToggleIcons
+
 	ld a, [wNextNote]
 	cp $ff
 	jr z, .advanceNotes ; song is over
@@ -121,24 +125,60 @@ LevelScreen::
 	jp .loop
 
 Level1Notes:
-	db D_LEFT, 0
+	db D_LEFT, 80
 	db D_UP, 20
 	db D_RIGHT, 20
 	db B_BUTTON, 20
+	db D_UP, 20
 	db B_BUTTON, 20
 	db D_RIGHT, 20
 	db B_BUTTON, 20
 	db A_BUTTON, 20
+	db D_UP, 20
+	db D_DOWN, 20
+	db A_BUTTON, 50
+	db A_BUTTON, 2
+	db D_UP, 2
+	db D_RIGHT, 2
+	db B_BUTTON, 2
+	db D_RIGHT, 2
+	db D_RIGHT, 2
+	db D_UP, 2
+	db D_DOWN, 2
+	db D_RIGHT, 2
+	db B_BUTTON, 2
+	db D_DOWN, 20
+	db A_BUTTON, 20
+	db D_DOWN, 20
+	db D_UP, 20
+	db A_BUTTON, 20
+	db D_DOWN, 20
+	db A_BUTTON, 50
+	db A_BUTTON, 20
+	db D_DOWN, 20
+	db D_UP, 20
+	db A_BUTTON, 50
+	db A_BUTTON, 20
+	db D_RIGHT, 20
+	db D_RIGHT, 20
+	db D_DOWN, 20
+	db D_RIGHT, 20
+	db D_UP, 20
+	db B_BUTTON, 20
+	db D_DOWN, 20
+	db A_BUTTON, 20
+	db D_UP, 20
 	db D_DOWN, 20
 	db A_BUTTON, 50
 	db A_BUTTON, 20
 	db D_RIGHT, 20
 	db B_BUTTON, 20
 	db A_BUTTON, 20
-	db D_DOWN, 20
-	db B_BUTTON, 20
-	db D_DOWN, 20
+	db A_BUTTON, 50
+	db D_UP, 20
 	db A_BUTTON, 20
+	db D_RIGHT, 20
+	db D_DOWN, 20
 	db D_RIGHT, 20
 	db B_BUTTON, 20
 	db A_BUTTON, 20
@@ -157,10 +197,120 @@ Level1Notes:
 	db B_BUTTON, 20
 	db $FF, $FF
 
+ToggleIcons:
+	call Joypad
+	ld bc, 0
+	ld a, [wJoy]
+	bit D_LEFT_F, a
+	jr z, .released1
+	ld a, $33
+	jr .skip1
+.released1
+	ld a, -$33
+.skip1
+	call .toggleIcon
+	
+	inc bc
+	inc bc
+	ld a, [wJoy]
+	bit D_UP_F, a
+	jr z, .released2
+	ld a, $33
+	jr .skip2
+.released2
+	ld a, -$33
+.skip2
+	call .toggleIcon
+	
+	inc bc
+	inc bc
+	ld a, [wJoy]
+	bit D_RIGHT_F, a
+	jr z, .released3
+	ld a, $33
+	jr .skip3
+.released3
+	ld a, -$33
+.skip3
+	call .toggleIcon
+	
+	inc bc
+	inc bc
+	ld a, [wJoy]
+	bit D_DOWN_F, a
+	jr z, .released4
+	ld a, $33
+	jr .skip4
+.released4
+	ld a, -$33
+.skip4
+	call .toggleIcon
+	
+	inc bc
+	inc bc
+	ld a, [wJoy]
+	bit B_BUTTON_F, a
+	jr z, .released5
+	ld a, $33
+	jr .skip5
+.released5
+	ld a, -$33
+.skip5
+	call .toggleIcon
+	
+	inc bc
+	inc bc
+	ld a, [wJoy]
+	bit A_BUTTON_F, a
+	jr z, .released6
+	ld a, $33
+	jr .skip6
+.released6
+	ld a, -$33
+.skip6
+	call .toggleIcon
+	ret
+
+.toggleIcon
+	ld hl, $99C2
+	add bc
+	ld e, a
+	ld a, [hl]
+	cp $B2
+	jr c, .looksReleased
+	; looks pressed
+	ld a, e
+	cp $33 + 1
+	ret c
+	; needs fixing
+	add [hl]
+	ld [hl], a
+	ld de, 32
+	add hl, de
+	add $11
+	ld [hl], a
+	ret
+.looksReleased
+	ld a, e
+	cp $33 + 1
+	ret nc
+	; needs fixing
+	add [hl]
+	ld [hl], a
+	ld de, 32
+	add hl, de
+	add $11
+	ld [hl], a
+	ret
+
 LoadLevelGraphics:
 	ld bc, LevelGraphicsEnd - LevelGraphics
 	ld hl, LevelGraphics
 	ld de, vChars1
+	call CopyData
+	ld bc, LevelGraphics2End - LevelGraphics2
+	ld hl, LevelGraphics2
+	ld de, vChars1 + (LevelGraphicsEnd - LevelGraphics)
 	call CopyData
 	ld bc, NoteGraphicsEnd - NoteGraphics
 	ld hl, NoteGraphics
@@ -213,6 +363,10 @@ LevelTileMapEnd:
 LevelGraphics:
 	INCBIN "gfx/level.2bpp"
 LevelGraphicsEnd:
+
+LevelGraphics2:
+	INCBIN "gfx/level_pressed.2bpp"
+LevelGraphics2End:
 
 NoteGraphics:
 	INCBIN "gfx/note.2bpp"
