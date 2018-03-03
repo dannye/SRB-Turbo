@@ -2,6 +2,8 @@ section "level wram", wram0
 wNotePtr: ds 2
 wNextNote: ds 1
 wDelay: ds 1
+wScore: ds 2
+wStreak: ds 1
 
 section "levelscreen", rom0
 
@@ -20,12 +22,15 @@ LevelScreen::
 	ld [wNotePtr], a
 	ld a, h
 	ld [wNotePtr + 1], a
-	call WaitVBlank
+	xor a
+	ld [wScore], a
+	ld [wScore + 1], a
+	ld [wStreak], a
 .loop
 	call WaitVBlank
-
 	callback ToggleIcons
 
+.checkNotesLoop
 	ld a, [wNextNote]
 	cp $ff
 	jr z, .advanceNotes ; song is over
@@ -94,6 +99,9 @@ LevelScreen::
 	ld [wNotePtr], a
 	ld a, h
 	ld [wNotePtr + 1], a
+	ld a, [wDelay]
+	and a
+	jr z, .checkNotesLoop ; in case of a chord
 .advanceNotes
 	;;; for all visible notes, scroll down
 	ld c, 40
@@ -122,12 +130,141 @@ LevelScreen::
 .skipInc
 	dec c
 	jr nz, .advanceLoop
+	
+	; check button presses for hits/misses
+	ld a, [wJoyPressed]
+	bit D_LEFT_F, a
+	jr z, .skip1
+	; check if note in left hitbox
+	ld a, 16*1 + 8
+	call NoteInHitbox
+	
+.skip1
+	ld a, [wJoyPressed]
+	bit D_UP_F, a
+	jr z, .skip2
+	; check if note in up hitbox
+	ld a, 16*2 + 8
+	call NoteInHitbox
+	
+.skip2
+	ld a, [wJoyPressed]
+	bit D_RIGHT_F, a
+	jr z, .skip3
+	; check if note in up hitbox
+	ld a, 16*3 + 8
+	call NoteInHitbox
+	
+.skip3
+	ld a, [wJoyPressed]
+	bit D_DOWN_F, a
+	jr z, .skip4
+	; check if note in up hitbox
+	ld a, 16*4 + 8
+	call NoteInHitbox
+	
+.skip4
+	ld a, [wJoyPressed]
+	bit B_BUTTON_F, a
+	jr z, .skip5
+	; check if note in up hitbox
+	ld a, 16*5 + 8
+	call NoteInHitbox
+	
+.skip5
+	ld a, [wJoyPressed]
+	bit A_BUTTON_F, a
+	jr z, .skip6
+	; check if note in up hitbox
+	ld a, 16*6 + 8
+	call NoteInHitbox
+	
+.skip6
+	
 	jp .loop
+
+; input: x-coord of left edge of hitbox in reg a
+; deletes sprite if hit
+; resets streak if no hit
+NoteInHitbox:
+	ld b, a
+	ld c, 0
+	ld hl, wOAM
+.loop
+	ld a, [hli]
+	cp $80
+	jr c, .no
+	cp $90
+	jr nc, .no
+	ld a, [hl]
+	cp b
+	jr nz, .no
+	; yes
+	xor a
+	dec hl
+	ld [hli], a
+	ld [hli], a
+	ld [hli], a
+	ld [hli], a
+	ld a, [wStreak]
+	inc a
+	ld [wStreak], a
+	ret
+.no
+	inc hl
+	inc hl
+	inc hl
+	inc c
+	ld a, c
+	cp 40
+	jr nz, .loop
+	xor a
+	ld [wStreak], a
+	ret
 
 Level1Notes:
 	db D_LEFT, 80
-	db D_UP, 20
-	db D_RIGHT, 20
+	db D_UP, 0
+	db D_RIGHT, 0
+	db D_DOWN, 0
+	db B_BUTTON, 0
+	db A_BUTTON, 0
+	db D_LEFT, 20
+	db D_UP, 0
+	db D_RIGHT, 0
+	db D_DOWN, 0
+	db B_BUTTON, 0
+	db A_BUTTON, 0
+	db D_LEFT, 20
+	db D_UP, 0
+	db D_RIGHT, 0
+	db D_DOWN, 0
+	db B_BUTTON, 0
+	db A_BUTTON, 0
+	db D_LEFT, 20
+	db D_UP, 0
+	db D_RIGHT, 0
+	db D_DOWN, 0
+	db B_BUTTON, 0
+	db A_BUTTON, 0
+	db D_LEFT, 20
+	db D_UP, 0
+	db D_RIGHT, 0
+	db D_DOWN, 0
+	db B_BUTTON, 0
+	db A_BUTTON, 0
+	db D_LEFT, 20
+	db D_UP, 0
+	db D_RIGHT, 0
+	db D_DOWN, 0
+	db B_BUTTON, 0
+	db A_BUTTON, 0
+	db D_LEFT, 20
+	db D_UP, 0
+	db D_RIGHT, 0
+	db D_DOWN, 0
+	db B_BUTTON, 0
+	db A_BUTTON, 0
 	db B_BUTTON, 20
 	db D_UP, 20
 	db B_BUTTON, 20
@@ -149,20 +286,20 @@ Level1Notes:
 	db B_BUTTON, 2
 	db D_DOWN, 20
 	db A_BUTTON, 20
-	db D_DOWN, 20
+	db D_DOWN, 0
 	db D_UP, 20
 	db A_BUTTON, 20
-	db D_DOWN, 20
+	db D_DOWN, 0
 	db A_BUTTON, 50
-	db A_BUTTON, 20
+	db A_BUTTON, 0
 	db D_DOWN, 20
 	db D_UP, 20
 	db A_BUTTON, 50
-	db A_BUTTON, 20
+	db A_BUTTON, 0
 	db D_RIGHT, 20
 	db D_RIGHT, 20
 	db D_DOWN, 20
-	db D_RIGHT, 20
+	db D_RIGHT, 0
 	db D_UP, 20
 	db B_BUTTON, 20
 	db D_DOWN, 20
@@ -316,9 +453,28 @@ LoadLevelGraphics:
 	ld hl, NoteGraphics
 	ld de, vChars0
 	call CopyData
+	ld bc, DigitsGraphicsEnd - DigitsGraphics
+	ld hl, DigitsGraphics
+	ld de, $8f00
+	call CopyData
 	
 	call DrawLevelTiles
-
+	
+	ld hl, vBGMap0 + 32 * 2 + 16
+	ld a, $FA
+	ld [hli], a
+	inc a
+	ld [hli], a
+	inc a
+	ld [hl], a
+	ld de, 32
+	add hl, de
+	ld a, $F0
+	ld [hld], a
+	ld [hld], a
+	ld [hld], a
+	ld [hld], a
+	
 	ret
 
 DrawLevelTiles:
@@ -371,3 +527,7 @@ LevelGraphics2End:
 NoteGraphics:
 	INCBIN "gfx/note.2bpp"
 NoteGraphicsEnd:
+
+DigitsGraphics:
+	INCBIN "gfx/digits.2bpp"
+DigitsGraphicsEnd:
