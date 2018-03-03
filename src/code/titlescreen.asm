@@ -1,4 +1,7 @@
+section "titlescreen wram", wram0
+wFlameCounter: ds 1
 
+section "titlescreen", rom0
 START_TILE = $80
 TITLE_X = 4
 TITLE_Y = 4
@@ -17,6 +20,55 @@ START_WIDTH = 8
 
 FIRE_HEIGHT = 3
 FIRE_WIDTH = 10
+
+TitleScreen::
+	call DisableLCD
+	call LoadTitleGraphics
+	call LoadTitle2Graphics
+	call LoadStartGraphics
+	call LoadFlames
+	call EnableLCD
+	xor a
+	ld [wFlameCounter], a
+.titleLoop
+	call WaitVBlank
+	
+	ld a, [wFlameCounter]
+	inc a
+	ld [wFlameCounter], a
+	cp 8
+	jr c, .noAnimate
+	xor a
+	ld [wFlameCounter], a
+	
+	ld a, [wOAM + 2]
+	and a
+	ld b, $1e
+	jr z, .frame1
+	ld b, -$1e
+.frame1
+	ld c, 28
+	ld hl, wOAM + 2
+.flameLoop
+	ld a, [hl]
+	add b
+	ld [hl], a
+	inc hl
+	inc hl
+	inc hl
+	inc hl
+	dec c
+	jr nz, .flameLoop
+	
+.noAnimate
+	; check for A or start
+	call Joypad
+	ld a, [wJoyPressed]
+	and A_BUTTON + START
+	; not pressed, do nothing
+	jr z, .titleLoop
+	; A or start was pressed, exit title screen
+	ret
 
 LoadTitleGraphics::
 	ld bc, TitleGraphicsEnd - TitleGraphics
@@ -119,7 +171,6 @@ FlamesOAMTable:
 	db 104, 8*7, 25, 0
 	db 104, 8*14, 26, 0
 	db 104, 8*15, 27, 0
-	
 FlamesOAMTableEnd:
 
 TitleGraphics:
