@@ -90,7 +90,7 @@ InitSound::
 	ld de, RussianFolk
 	jr z, .gotSong
 	ld hl, CanonChannel1
-	ld de, CanonChannel2
+	ld de, CanonChannel1
 .gotSong
 	push de
 	push hl
