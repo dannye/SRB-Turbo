@@ -14,8 +14,17 @@ LevelScreen::
 	call DisableLCD
 	call LoadLevelGraphics
 	call EnableLCD
+	ld a, [wDifficulty]
 	call InitSound
-	ld hl, Level1Notes
+	ld a, [wDifficulty]
+	cp 2
+	ld hl, FireAndFlamesNotes
+	jr z, .gotSong
+	cp 1
+	ld hl, RussianFolkNotes
+	jr z, .gotSong
+	ld hl, CanonNotes
+.gotSong
 	ld a, [hli]
 	ld [wNextNote], a
 	ld a, [hli]
@@ -371,7 +380,7 @@ DrawStreak:
 .done
 	ret
 
-Level1Notes:
+FireAndFlamesNotes:
 	db D_UP, 0
 	db D_DOWN, 10
 	db D_RIGHT, 10
@@ -573,7 +582,7 @@ Level1Notes:
 	db D_LEFT, 10
 	db $FF, $FF
 
-Level1NotesCanon:
+CanonNotes:
 	; db D_LEFT, 0
 	;db D_RIGHT, 30
 	;db D_DOWN, 30
@@ -836,7 +845,7 @@ Level1NotesCanon:
 
 	db $FF, $FF
 
-Level1Notes2:
+RussianFolkNotes:
 	db D_LEFT, 80
 	db A_BUTTON, 0
 	db B_BUTTON, 20

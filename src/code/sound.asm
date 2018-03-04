@@ -81,6 +81,19 @@ octave: macro
 endm
 
 InitSound::
+	cp 2
+	ld hl, FireAndFlames
+	ld de, FireAndFlames
+	jr z, .gotSong
+	cp 1
+	ld hl, RussianFolk
+	ld de, RussianFolk
+	jr z, .gotSong
+	ld hl, CanonChannel1
+	ld de, CanonChannel2
+.gotSong
+	push de
+	push hl
 	ld a, %10000000
 	ld [rNR52], a
 	;ld a, %10000000
@@ -99,9 +112,9 @@ InitSound::
 	ld [rNR14], a ; counter mode
 	ld [rNR24], a
 	;ld [rNR44], a
-	ld hl, SongData
+	pop hl
 	call Ch0NextNote
-	ld hl, SongData1
+	pop hl
 	call Ch1NextNote
 	ret
 
@@ -262,40 +275,8 @@ Pitches:
 	dw $FB9B ; A#
 	dw $FBDA ; B_
 
-EasySongMain:
-	octave 5
-	C_ 50
-	__ 50
-	C# 50
-	__ 50
-	D_ 50
-	__ 50
-	D# 50
-	__ 50
-	E_ 50
-	__ 50
-	F_ 50
-	__ 50
-	F# 50
-	__ 50
-	G_ 50
-	__ 50
-	G# 50
-	__ 50
-	A_ 50
-	__ 50
-	A# 50
-	__ 50
-	B_ 50
-	__ 50
-	octave 6
-	C_ 50
-	__ 50
-	db $FF, $FF
-	
-SongData1:
-	__ 2
-SongData:
+
+FireAndFlames:
 	octave 5
 	__ $78
 	D_ 10
@@ -502,7 +483,55 @@ SongData:
 	db $FF, $FF
 
 
-Canon:
+CanonChannel2:
+	__ $78
+rept 9
+	__ 80
+endr
+	octave 5
+	C_ 80
+	octave 6
+	G_ 80
+	A_ 80
+	E_ 80
+	F_ 80
+	C_ 80
+	F_ 80
+	G_ 80
+	octave 5
+	C_ 80
+	octave 6
+	G_ 80
+	A_ 80
+	E_ 80
+	F_ 80
+	C_ 80
+	F_ 80
+	G_ 80
+	octave 5
+	C_ 80
+	octave 6
+	G_ 80
+	A_ 80
+	E_ 80
+	F_ 80
+	C_ 80
+	F_ 80
+	G_ 80
+	octave 5
+	C_ 80
+	octave 6
+	G_ 80
+	A_ 80
+	E_ 80
+	F_ 80
+	C_ 80
+	F_ 80
+	G_ 80
+	__ 1
+	db $FF, $FF
+	
+CanonChannel1:
 	octave 5
 	__ $78
 	C_ 80

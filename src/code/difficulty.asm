@@ -84,6 +84,7 @@ GetDifficultySelection::
 	and A_BUTTON
 	jr z, .noA
 	ld a, [wCurSelection]
+	ld b, a
 	xor a
 	ld hl, wOAM
 	ld [hli], a
@@ -91,6 +92,7 @@ GetDifficultySelection::
 	ld [hli], a
 	scf
 	ccf
+	ld a, b
 	ret
 .noA
 	jr .difficultyLoop
