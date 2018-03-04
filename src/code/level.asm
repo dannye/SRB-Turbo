@@ -600,11 +600,11 @@ FireAndFlamesNotes:
 	db D_UP, 5
 	db D_RIGHT, 5
 	db D_DOWN, 5
-	db D_UP, 5
-	db D_DOWN, 5
-	db D_UP, 5
-	db D_LEFT, 5
-	db D_UP, 5
+;	db D_UP, 5
+;	db D_DOWN, 5
+;	db D_UP, 5
+	;db D_LEFT, 5
+	;db D_UP, 5
 	
 	db A_BUTTON, 5
 	db A_BUTTON, 10
@@ -614,7 +614,7 @@ FireAndFlamesNotes:
 	db B_BUTTON, 10
 	db A_BUTTON, 10
 	
-	db D_UP, 30
+	db D_UP, 53
 	db D_RIGHT, 10
 	db B_BUTTON, 10
 	db A_BUTTON, 20
@@ -655,7 +655,7 @@ FireAndFlamesNotes:
 	db A_BUTTON, 20
 	db B_BUTTON, 20
 	db D_RIGHT, 10
-	db D_LEFT, 10
+	db D_LEFT, 15
 	db $FF, $FF
 
 CanonNotes:
