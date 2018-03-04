@@ -4,6 +4,7 @@ wNotePtr: ds 2
 wNextNote: ds 1
 wDelay: ds 1
 wScore: ds 2
+wDisplayedScore: ds 2
 wStreak: ds 1
 wBombs: ds 1
 
@@ -36,6 +37,8 @@ LevelScreen::
 	xor a
 	ld [wScore], a
 	ld [wScore + 1], a
+	ld [wDisplayedScore], a
+	ld [wDisplayedScore + 1], a
 	ld [wStreak], a
 	ld [wBombs], a
 .loop
@@ -344,22 +347,76 @@ IncrementStreak:
 	ret
 
 DrawScore:
+	ld a, [wDisplayedScore]
+	ld hl, wScore
+	cp [hl]
+	ld a, [wDisplayedScore + 1]
+	jp nz, .notEqual
+	inc hl
+	cp [hl]
+	jr z, .equal
+.notEqual
+	and $0F
+	cp 9
+	jr nc, .doCarry
+	inc a
+	ld b, a
+	ld a, [wDisplayedScore + 1]
+	and $F0
+	or b
+	ld [wDisplayedScore + 1], a
+	jr .print
+.doCarry
+	ld a, [wDisplayedScore + 1]
+	and $F0
+	cp $90
+	jr nc, .doCarry2
+	add $10
+	ld [wDisplayedScore + 1], a
+	jr .print
+.doCarry2
+	xor a
+	ld [wDisplayedScore + 1], a
+	
+	ld a, [wDisplayedScore]
+	and $0F
+	cp 9
+	jr nc, .doCarry3
+	inc a
+	ld b, a
+	ld a, [wDisplayedScore]
+	and $F0
+	or b
+	ld [wDisplayedScore], a
+	jr .print
+.doCarry3
+	ld a, [wDisplayedScore]
+	and $F0
+	cp $90
+	jr nc, .doCarry4
+	add $10
+	ld [wDisplayedScore], a
+	jr .print
+.doCarry4
+
+.equal
+.print
 	ld hl, $986F
-	ld a, [wScore]
+	ld a, [wDisplayedScore]
 	and $F0
 	swap a
 	add $F0
 	ld [hli], a
-	ld a, [wScore]
+	ld a, [wDisplayedScore]
 	and $0F
 	add $F0
 	ld [hli], a
-	ld a, [wScore + 1]
+	ld a, [wDisplayedScore + 1]
 	and $F0
 	swap a
 	add $F0
 	ld [hli], a
-	ld a, [wScore + 1]
+	ld a, [wDisplayedScore + 1]
 	and $0F
 	add $F0
 	ld [hli], a
