@@ -76,24 +76,24 @@ octave: macro
 endm
 
 InitSound::
-	ld a, $00
-	ld [rNR50], a
 	ld a, %10000000
-	ld a, [rNR52]
-	ld a, $8
-	ld [rNR10], a
-	ld a, %11110111
-	ld [rNR12], a ; volume
-	ld a, %10000001
+	ld [rNR52], a
+	;ld a, %10000000
 	ld [rNR11], a ; duty
+	ld a, %11110011
+	ld [rNR12], a ; volume
 	ld a, %11111111
 	ld [rNR51], a ; 
+	ld a, $77
+	ld [rNR50], a
+	;ld a, $8
+	;ld [rNR10], a
 	ld a, $40
 	ld [rNR14], a ; counter mode
 	;ld [rNR24], a
 	;ld [rNR44], a
-	ld a, $77
-	ld [rNR50], a
+	;ld a, $77
+	;ld [rNR50], a
 	ld hl, SongData
 StartNextNote:
 	ld a, [hli]
