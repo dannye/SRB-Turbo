@@ -314,6 +314,43 @@ DrawStreak:
 	ret
 
 Level1Notes:
+		; db D_LEFT, 0
+		;db D_RIGHT, 30
+		;db D_DOWN, 30
+		;db D_UP, 30
+		;db A_BUTTON, 30
+		;db B_BUTTON, 30
+		db A_BUTTON, 0
+		db D_RIGHT, 80
+		db B_BUTTON, 80
+		db D_DOWN, 80
+		db D_RIGHT, 80
+		db D_LEFT, 80
+		db D_RIGHT, 80
+		db B_BUTTON, 80
+		db A_BUTTON, 80
+		db D_RIGHT, 0
+		db D_RIGHT, 80
+		db D_DOWN, 0
+		db B_BUTTON, 80
+		db D_UP, 0
+		db D_DOWN, 80
+		db D_RIGHT, 0
+		db D_RIGHT, 80
+		db D_UP, 0
+		db D_LEFT, 80
+		db D_DOWN, 0
+		db D_RIGHT, 80
+		db D_UP, 0
+		db B_BUTTON, 80
+		db D_RIGHT, 0 ; end of first melody
+		db D_UP, 80
+		db D_RIGHT, 40
+		db A_BUTTON, 40
+		db B_BUTTON, 40
+		db $FF, $FF
+
+Level1Notes2:
 	db D_LEFT, 80
 	db A_BUTTON, 0
 	db B_BUTTON, 20
