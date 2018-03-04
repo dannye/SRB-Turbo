@@ -544,5 +544,17 @@ SongData:
 	__ 10
 	octave 4
 	G_ 20
+	octave 5
+	C_ 80
+	octave 6
+	G_ 80
+	A_ 80
+	E_ 80
+	F_ 80
+	C_ 80
+	F_ 80
+	G_ 80
+	octave 5
+	C_ 80
 	__ 50
 	db $FF, $FF

@@ -621,6 +621,16 @@ Level1Notes:
 	db D_RIGHT, 10
 	
 	db A_BUTTON, 20
+	
+	db A_BUTTON, 20
+	db D_RIGHT, 80
+	db B_BUTTON, 80
+	db D_DOWN, 80
+	db D_RIGHT, 80
+	db D_LEFT, 80
+	db D_RIGHT, 80
+	db B_BUTTON, 80
+	db A_BUTTON, 80
 
 	db $FF, $FF
 
