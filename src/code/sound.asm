@@ -90,7 +90,7 @@ InitSound::
 	ld de, RussianFolk
 	jr z, .gotSong
 	ld hl, CanonChannel1
-	ld de, CanonChannel2
+	ld de, CanonChannel1
 .gotSong
 	push de
 	push hl
@@ -412,7 +412,7 @@ FireAndFlames:
 	A_ 5
 	G_ 5
 	__ 5
-	octave 4
+	octave 5
 	A_ 9
 	__ 1
 	A_ 9
@@ -689,17 +689,17 @@ CanonChannel1:
 	octave 5
 	D_ 20
 	G_ 20 ; end of 3rd melody
-	octave 4
+	octave 5
 	G_ 20
 	E_ 10
 	F_ 10
 	G_ 10
 	__ 10
-	octave 5
+	octave 6
 	G_ 10
 	A_ 10
 	B_ 10
-	octave 4
+	octave 5
 	C_ 10
 	D_ 10
 	E_ 10
@@ -712,7 +712,7 @@ CanonChannel1:
 	D_ 10
 	E_ 10
 	__ 10
-	octave 5
+	octave 6
 	E_ 10
 	F_ 10
 	G_ 10
@@ -720,30 +720,30 @@ CanonChannel1:
 	G_ 10
 	F_ 10
 	G_ 10
-	octave 4
-	C_ 10
 	octave 5
+	C_ 10
+	octave 6
 	B_ 10
-	octave 4
-	C_ 10
 	octave 5
+	C_ 10
+	octave 6
 	A_ 10
-	octave 4
+	octave 5
 	__ 10
 	C_ 10
-	octave 5
+	octave 6
 	B_ 10
-	octave 4
+	octave 5
 	C_ 10
 	__ 10
-	octave 5
+	octave 6
 	B_ 10
-	octave 4
-	C_ 10
 	octave 5
+	C_ 10
+	octave 6
 	A_ 10
 	B_ 10
-	octave 4
+	octave 5
 	C_ 10
 	D_ 10
 	E_ 10
@@ -754,12 +754,12 @@ CanonChannel1:
 	G_ 10
 	A_ 10
 	B_ 10
-	octave 3
-	C_ 10
 	octave 4
+	C_ 10
+	octave 5
 	A_ 10
 	B_ 10
-	octave 3
+	octave 4
 	C_ 10
 	D_ 10
 	C_ 10
@@ -767,7 +767,7 @@ CanonChannel1:
 	E_ 10
 	F_ 10
 	__ 10
-	octave 4
+	octave 5
 	G_ 10
 	__ 10  
 	G_ 20
@@ -775,11 +775,11 @@ CanonChannel1:
 	F_ 10
 	G_ 10
 	__ 10
-	octave 5
+	octave 6
 	G_ 10
 	A_ 10
 	B_ 10
-	octave 4
+	octave 5
 	C_ 10
 	D_ 10
 	E_ 10
@@ -792,7 +792,7 @@ CanonChannel1:
 	D_ 10
 	E_ 10
 	__ 10
-	octave 5
+	octave 6
 	E_ 10
 	F_ 10
 	G_ 10
@@ -800,30 +800,30 @@ CanonChannel1:
 	G_ 10
 	F_ 10
 	G_ 10
-	octave 4
-	C_ 10
 	octave 5
+	C_ 10
+	octave 6
 	B_ 10
-	octave 4
-	C_ 10
 	octave 5
+	C_ 10
+	octave 6
 	A_ 10
-	octave 4
+	octave 5
 	__ 10
 	C_ 10
-	octave 5
+	octave 6
 	B_ 10
-	octave 4
+	octave 5
 	C_ 10
 	__ 10
-	octave 5
+	octave 6
 	B_ 10
-	octave 4
-	C_ 10
 	octave 5
+	C_ 10
+	octave 6
 	A_ 10
 	B_ 10
-	octave 4
+	octave 5
 	C_ 10
 	D_ 10
 	E_ 10
@@ -834,12 +834,12 @@ CanonChannel1:
 	G_ 10
 	A_ 10
 	B_ 10
-	octave 3
-	C_ 10
 	octave 4
+	C_ 10
+	octave 5
 	A_ 10
 	B_ 10
-	octave 3
+	octave 4
 	C_ 10
 	D_ 10
 	C_ 10
@@ -847,7 +847,7 @@ CanonChannel1:
 	E_ 10
 	F_ 10
 	__ 10
-	octave 4
+	octave 5
 	G_ 20
 	octave 5
 	C_ 80

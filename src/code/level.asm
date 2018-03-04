@@ -4,8 +4,11 @@ wNotePtr: ds 2
 wNextNote: ds 1
 wDelay: ds 1
 wScore: ds 2
+wDisplayedScore: ds 2
 wStreak: ds 1
 wBombs: ds 1
+
+wOAMCopy: ds 40*4
 
 section "levelscreen", rom0
 
@@ -36,6 +39,8 @@ LevelScreen::
 	xor a
 	ld [wScore], a
 	ld [wScore + 1], a
+	ld [wDisplayedScore], a
+	ld [wDisplayedScore + 1], a
 	ld [wStreak], a
 	ld [wBombs], a
 .loop
@@ -45,6 +50,7 @@ LevelScreen::
 	callback DrawStreak
 	call Ch0UpdateSound
 	call Ch1UpdateSound
+	call Joypad
 
 .checkNotesLoop
 	ld a, [wNextNote]
@@ -228,7 +234,73 @@ LevelScreen::
 	dec c
 	jr nz, .explosionLoop
 .skip7
+	ld a, [wJoyPressed]
+	bit START_F, a
+	jr z, .skip8
+	;;; pause the game
+	ld a, [rNR51]
+	push af
+	xor a
+	ld [rNR51], a
+	ld bc, 40*4
+	ld hl, wOAM
+	ld de, wOAMCopy
+	call CopyData
+	fill wOAM, 40*4, 0
+	ld bc, wQuitOAMEnd - wQuitOAM
+	ld hl, wQuitOAM
+	ld de, wOAM
+	call CopyData
+	ld a, %10010100
+	ld [rBGP], a
+.pauseLoop
+	call WaitVBlank
+	call Joypad
+	ld a, [wJoyPressed]
+	;;;
+	bit D_LEFT_F, a
+	jr z, .noLeft
+	ld a, [wOAM + 1]
+	cp 128
+	jr z, .noLeft
+	ld a, 128
+	ld [wOAM + 1], a
+.noLeft
+	ld a, [wJoyPressed]
+	bit D_RIGHT_F, a
+	jr z, .noRight
+	ld a, [wOAM + 1]
+	cp 156
+	jr z, .noRight
+	ld a, 156
+	ld [wOAM + 1], a
+.noRight
+	ld a, [wJoyPressed]
+	bit A_BUTTON_F, a
+	jr z, .pauseLoop
+	ld a, [wOAM + 1]
+	cp 128
+	jp z, Init
+	ld a, %11100100
+	ld [rBGP], a
+	ld bc, 40*4
+	ld hl, wOAMCopy
+	ld de, wOAM
+	call CopyData
+	pop af
+	ld [rNR51], a
+.skip8
 	jp .loop
+
+wQuitOAM:
+	db 121, 128, 07, 00
+	db 96, 128, 01, 00
+	db 96, 136, 02, 00
+	db 96, 144, 03, 00
+	db 96, 156, 04, 00
+	db 112, 128, 05, 00
+	db 112, 156, 06, 00
+wQuitOAMEnd:
 
 ; input: x-coord of left edge of hitbox in reg a
 ; deletes sprite if hit
@@ -325,22 +397,76 @@ IncrementStreak:
 	ret
 
 DrawScore:
+	ld a, [wDisplayedScore]
+	ld hl, wScore
+	cp [hl]
+	ld a, [wDisplayedScore + 1]
+	jp nz, .notEqual
+	inc hl
+	cp [hl]
+	jr z, .equal
+.notEqual
+	and $0F
+	cp 9
+	jr nc, .doCarry
+	inc a
+	ld b, a
+	ld a, [wDisplayedScore + 1]
+	and $F0
+	or b
+	ld [wDisplayedScore + 1], a
+	jr .print
+.doCarry
+	ld a, [wDisplayedScore + 1]
+	and $F0
+	cp $90
+	jr nc, .doCarry2
+	add $10
+	ld [wDisplayedScore + 1], a
+	jr .print
+.doCarry2
+	xor a
+	ld [wDisplayedScore + 1], a
+	
+	ld a, [wDisplayedScore]
+	and $0F
+	cp 9
+	jr nc, .doCarry3
+	inc a
+	ld b, a
+	ld a, [wDisplayedScore]
+	and $F0
+	or b
+	ld [wDisplayedScore], a
+	jr .print
+.doCarry3
+	ld a, [wDisplayedScore]
+	and $F0
+	cp $90
+	jr nc, .doCarry4
+	add $10
+	ld [wDisplayedScore], a
+	jr .print
+.doCarry4
+
+.equal
+.print
 	ld hl, $986F
-	ld a, [wScore]
+	ld a, [wDisplayedScore]
 	and $F0
 	swap a
 	add $F0
 	ld [hli], a
-	ld a, [wScore]
+	ld a, [wDisplayedScore]
 	and $0F
 	add $F0
 	ld [hli], a
-	ld a, [wScore + 1]
+	ld a, [wDisplayedScore + 1]
 	and $F0
 	swap a
 	add $F0
 	ld [hli], a
-	ld a, [wScore + 1]
+	ld a, [wDisplayedScore + 1]
 	and $0F
 	add $F0
 	ld [hli], a
@@ -524,11 +650,11 @@ FireAndFlamesNotes:
 	db D_UP, 5
 	db D_RIGHT, 5
 	db D_DOWN, 5
-	db D_UP, 5
-	db D_DOWN, 5
-	db D_UP, 5
-	db D_LEFT, 5
-	db D_UP, 5
+;	db D_UP, 5
+;	db D_DOWN, 5
+;	db D_UP, 5
+	;db D_LEFT, 5
+	;db D_UP, 5
 	
 	db A_BUTTON, 5
 	db A_BUTTON, 10
@@ -538,7 +664,7 @@ FireAndFlamesNotes:
 	db B_BUTTON, 10
 	db A_BUTTON, 10
 	
-	db D_UP, 30
+	db D_UP, 53
 	db D_RIGHT, 10
 	db B_BUTTON, 10
 	db A_BUTTON, 20
@@ -579,7 +705,7 @@ FireAndFlamesNotes:
 	db A_BUTTON, 20
 	db B_BUTTON, 20
 	db D_RIGHT, 10
-	db D_LEFT, 10
+	db D_LEFT, 15
 	db $FF, $FF
 
 CanonNotes:
@@ -934,7 +1060,6 @@ RussianFolkNotes:
 	db $FF
 
 ToggleIcons:
-	call Joypad
 	ld bc, 0
 	ld a, [wJoy]
 	bit D_LEFT_F, a
@@ -1052,6 +1177,10 @@ LoadLevelGraphics:
 	ld hl, NoteGraphics
 	ld de, vChars0
 	call CopyData
+	ld bc, QuitGraphicsEnd - QuitGraphics
+	ld hl, QuitGraphics
+	ld de, vChars0 + $10
+	call CopyData
 	ld bc, ScoreStreakGraphicsEnd - ScoreStreakGraphics
 	ld hl, ScoreStreakGraphics
 	ld de, vChars1 + (LevelGraphics2End - LevelGraphics)
@@ -1161,3 +1290,7 @@ BombGraphicsEnd:
 DigitsGraphics:
 	INCBIN "gfx/digits.2bpp"
 DigitsGraphicsEnd:
+
+QuitGraphics:
+	INCBIN "gfx/quit.2bpp"
+QuitGraphicsEnd:
