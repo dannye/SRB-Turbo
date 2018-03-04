@@ -485,9 +485,6 @@ FireAndFlames:
 
 CanonChannel2:
 	__ $78
-rept 9
-	__ 80
-endr
 	octave 5
 	C_ 80
 	octave 6
@@ -498,6 +495,18 @@ endr
 	C_ 80
 	F_ 80
 	G_ 80
+	
+	octave 5
+	E_ 80
+	D_ 80
+	C_ 80
+	octave 6
+	B_ 80
+	A_ 80
+	G_ 80
+	A_ 80
+	B_ 80
+	
 	octave 5
 	C_ 80
 	octave 6
@@ -508,6 +517,7 @@ endr
 	C_ 80
 	F_ 80
 	G_ 80
+	
 	octave 5
 	C_ 80
 	octave 6
@@ -518,6 +528,41 @@ endr
 	C_ 80
 	F_ 80
 	G_ 80
+
+	octave 5
+	C_ 80
+	octave 6
+	G_ 80
+	A_ 80
+	E_ 80
+	F_ 80
+	C_ 80
+	F_ 80
+	G_ 80
+	
+	octave 5
+	C_ 80
+	octave 6
+	G_ 80
+	A_ 80
+	E_ 80
+	F_ 80
+	C_ 80
+	F_ 80
+	G_ 80
+		
+	
+	octave 5
+	C_ 80
+	octave 6
+	G_ 80
+	A_ 80
+	E_ 80
+	F_ 80
+	C_ 80
+	F_ 80
+	G_ 80
+			
 	octave 5
 	C_ 80
 	octave 6
@@ -530,7 +575,8 @@ endr
 	G_ 80
 	__ 1
 	db $FF, $FF
-	
+
+
 CanonChannel1:
 	octave 5
 	__ $78
@@ -582,17 +628,13 @@ CanonChannel1:
 	octave 5
 	G_ 40
 	E_ 40
-	A_ 38
-	__ 2
 	A_ 40
-	G_ 38
-	__ 2
+	A_ 40
 	G_ 40
-	A_ 38
-	__ 2
+	G_ 40
 	A_ 40
-	B_ 38
-	__ 2
+	A_ 40
+	B_ 40
 	B_ 40 ; end of second melody
 	octave 5
 	C_ 20

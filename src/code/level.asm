@@ -46,6 +46,7 @@ LevelScreen::
 	call Ch0UpdateSound
 	call Ch1UpdateSound
 
+
 .checkNotesLoop
 	ld a, [wNextNote]
 	cp $ff
