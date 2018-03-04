@@ -228,7 +228,7 @@ EasySongMain:
 
 SongData:
 	octave 5
-	__ $70
+	__ $78
 	C_ 80
 	octave 6
 	G_ 80
