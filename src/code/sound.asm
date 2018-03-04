@@ -86,7 +86,7 @@ InitSound::
 	;ld a, %10000000
 	ld [rNR11], a ; duty
 	ld [rNR21], a ; duty
-	ld a, %11110011
+	ld a, %11111000
 	ld [rNR12], a ; volume
 	ld [rNR22], a ; volume
 	ld a, %11111111
@@ -95,13 +95,13 @@ InitSound::
 	ld [rNR50], a
 	;ld a, $8
 	;ld [rNR10], a
-	ld a, $40
+	ld a, $00
 	ld [rNR14], a ; counter mode
 	ld [rNR24], a
 	;ld [rNR44], a
 	ld hl, SongData
 	call Ch0NextNote
-	ld hl, EasySongMain
+	ld hl, SongData1
 	call Ch1NextNote
 	ret
 
@@ -135,6 +135,7 @@ Ch0NextNote:
 	ld a, e
 	ld [rNR13], a
 	ld a, d
+	res 6, a
 	ld [rNR14], a
 	ret
 .rest
@@ -194,6 +195,7 @@ Ch1NextNote:
 	ld a, e
 	ld [rNR23], a
 	ld a, d
+	res 6, a
 	ld [rNR24], a
 	ret
 .rest
@@ -244,9 +246,6 @@ CalculateFrequency:
 	inc a
 	jr .loop
 .done
-	ld a, 8
-	add d
-	ld d, a
 	ret
 
 Pitches:
@@ -294,7 +293,8 @@ EasySongMain:
 	__ 50
 	db $FF, $FF
 	
-
+SongData1:
+	__ 2
 SongData:
 	octave 5
 	__ $78
