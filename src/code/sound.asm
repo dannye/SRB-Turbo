@@ -94,7 +94,7 @@ InitSound::
 	;ld [rNR44], a
 	;ld a, $77
 	;ld [rNR50], a
-	ld hl, SongData
+	ld hl, One
 StartNextNote:
 	ld a, [hli]
 	cp 13
@@ -765,3 +765,317 @@ Canon:
 	C_ 80
 	__ 50
 	db $FF, $FF
+
+RussianFolk:
+	__ $78
+	octave 5
+	D_ 12
+	E_ 12
+	F_ 12
+	G_ 12
+	A_ 12
+	octave 4
+	__ 12
+	D_ 12
+	__ 12
+	octave 5
+	A# 12
+	octave 4
+	C_ 12
+	D_ 12
+	octave 5
+	A# 12
+	A_ 12
+	__ 12
+	F_ 12
+	__ 12
+	G_ 10
+	__ 1
+	G_ 10
+	__ 1
+	A# 10
+	__ 1
+	G_ 10
+	__ 1
+	F_ 10
+	__ 1
+	F_ 10
+	__ 1
+	A_ 10
+	__ 1
+	F_ 10
+	__ 1
+	E_ 10
+	__ 1
+	E_ 10
+	__ 1
+	F_ 10
+	__ 1
+	E_ 10
+	__ 1
+	D_ 12
+	E_ 12
+	F_ 12
+	G_ 12
+	A_ 12
+	__ 12
+	octave 4
+	D_ 12
+	__ 12
+	octave 5
+	A# 12
+	octave 4
+	C_ 12
+	D_ 12
+	octave 5
+	A# 12
+	A_ 12
+	__ 12
+	F_ 12
+	__ 12
+	G_ 10
+	__ 1
+	G_ 10
+	__ 1
+	A# 10
+	__ 1
+	G_ 10
+	__ 1
+	F_ 10
+	__ 1
+	F_ 10
+	__ 1
+	A_ 10
+	__ 1
+	F_ 10
+	__ 1
+	E_ 10
+	__ 1
+	E_ 10
+	__ 1
+	F_ 10
+	__ 1
+	E_ 10
+	__ 1
+	D_ 10
+	__ 30
+	octave 4
+	D_ 16
+	__ 1
+	C_ 16
+	__ 1
+	octave 5
+	A# 16
+	__ 1
+	A_ 16
+	__ 1
+	octave 4
+	D_ 16
+	__ 1
+	C_ 16
+	__ 1
+	octave 5
+	A# 16
+	__ 1
+	A_ 16
+	__ 1
+	octave 4
+	D_ 8
+	__ 1
+	C_ 10
+	__ 1
+	octave 5
+	A# 8
+	__ 1
+	A_ 8
+	__ 1
+	octave 4
+	D_ 8
+	__ 1
+	C_ 10
+	__ 1
+	octave 5
+	A# 8
+	__ 1
+	A_ 8
+	__ 1
+	octave 4
+	D_ 8
+	__ 1
+	C_ 8
+	__ 1
+	octave 5
+	A# 8
+	__ 1
+	A_ 8
+	__ 1
+	octave 4
+	D_ 8
+	__ 1
+	C_ 8
+	__ 1
+	octave 5
+	A# 8
+	__ 1
+	A_ 8
+	__ 1
+	A# 8
+	__ 1
+	A_ 8
+	__ 1
+	G_ 8
+	__ 1
+	A_ 8
+	__ 1
+	A# 8
+	__ 1
+	G_ 8
+	__ 1
+	A_ 8
+	__ 1
+	F_ 8
+	__ 1
+	G_ 16
+	__ 16
+	E_ 16
+	__ 1
+	F_ 16
+	__ 1
+	E_ 16
+	__ 8
+	D_ 32
+	__ 20
+	db $FF, $FF
+
+One:
+	octave 5
+	__ $78
+	B_ 20
+	octave 4
+	F# 20
+	octave 5
+	B_ 20
+	octave 4
+	D_ 50
+	__ 10
+	D_ 40
+
+	octave 6
+	G_ 20
+	octave 4
+	F# 20
+	octave 6
+	G_ 20
+	octave 4
+	D_ 50
+	__ 10
+	D_ 40
+
+	octave 5
+	B_ 20
+	octave 4
+	F# 20
+	octave 5
+	B_ 20
+	octave 4
+	D_ 50
+	__ 10
+	D_ 40
+
+	octave 6
+	G_ 20
+	octave 4
+	F# 20
+	octave 6
+	G_ 20
+	octave 4
+	D_ 40
+	G_ 60
+
+	octave 5
+	B_ 20
+	octave 4
+	F# 20
+	octave 5
+	B_ 20
+	octave 4
+	D_ 50
+	__ 10
+	D_ 40
+
+	octave 6
+	A_ 20
+	octave 4
+	F# 20
+	octave 6
+	A_ 20
+	octave 4
+	D_ 50
+	__ 10
+	D_ 40
+
+	octave 6
+	G_ 20
+	octave 4
+	F# 20
+	octave 6
+	G_ 20
+	octave 4
+	D_ 50
+	__ 10
+	D_ 40
+
+	octave 6
+	E_ 20
+	octave 5
+	B_ 20
+	octave 6
+	F# 20
+	octave 5
+	B_ 20
+
+	octave 5
+	E_ 10
+	octave 4
+	F# 10
+	octave 3
+	A_ 20
+	B_ 10
+	C# 10
+	B_ 20
+
+
+
+
+
+
+
+	__ 20
+	db $FF, $FF
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
