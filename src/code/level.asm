@@ -5,6 +5,7 @@ wNextNote: ds 1
 wDelay: ds 1
 wScore: ds 2
 wStreak: ds 1
+wBombs: ds 1
 
 section "levelscreen", rom0
 
@@ -27,6 +28,7 @@ LevelScreen::
 	ld [wScore], a
 	ld [wScore + 1], a
 	ld [wStreak], a
+	ld [wBombs], a
 .loop
 	call WaitVBlank
 	callback ToggleIcons
@@ -185,7 +187,38 @@ LevelScreen::
 	call NoteInHitbox
 	
 .skip6
-	
+	ld a, [wJoyPressed]
+	bit SELECT_F, a
+	jr z, .skip7
+	ld a, [wBombs]
+	and a
+	jr z, .skip7
+	dec a
+	ld [wBombs], a
+	;;; scan oam table and delete every note
+	ld c, 40
+	ld hl, wOAM
+.explosionLoop
+	ld a, [hl]
+	and a
+	jr z, .no
+	xor a
+	ld [hli], a
+	ld [hli], a
+	ld [hli], a
+	ld [hli], a
+	call IncrementStreak
+	call IncrementScore
+	jr .yes
+.no
+	inc hl
+	inc hl
+	inc hl
+	inc hl
+.yes
+	dec c
+	jr nz, .explosionLoop
+.skip7
 	jp .loop
 
 ; input: x-coord of left edge of hitbox in reg a
@@ -211,7 +244,6 @@ NoteInHitbox:
 	ld [hli], a
 	ld [hli], a
 	ld [hli], a
-	ld a, [wStreak]
 	call IncrementStreak
 	call IncrementScore
 	ret
@@ -276,6 +308,11 @@ IncrementStreak:
 	and $F0
 	add $10
 	ld [wStreak], a
+	ld a, [wBombs]
+	cp 3
+	ret nc
+	inc a
+	ld [wBombs], a
 	ret
 
 DrawScore:
@@ -311,6 +348,27 @@ DrawStreak:
 	and $0F
 	add $F0
 	ld [hli], a
+	
+	ld c, 3
+	ld a, [wBombs]
+	ld hl, $9932
+.fillBombs
+	and a
+	jr z, .finishFill
+	ld [hl], $EE
+	dec hl
+	dec a
+	dec c
+	jr .fillBombs
+.finishFill
+	ld a, c
+	and a
+	jr z, .done
+	ld [hl], $00
+	dec hl
+	dec c
+	jr .finishFill
+.done
 	ret
 
 Level1Notes:
@@ -765,6 +823,10 @@ LoadLevelGraphics:
 	ld hl, DigitsGraphics
 	ld de, $8f00
 	call CopyData
+	ld bc, BombGraphicsEnd - BombGraphics
+	ld hl, BombGraphics
+	ld de, vChars1 + (ScoreStreakGraphicsEnd - LevelGraphics)
+	call CopyData
 	
 	call DrawLevelTiles
 	
@@ -851,10 +913,14 @@ NoteGraphics:
 	INCBIN "gfx/note.2bpp"
 NoteGraphicsEnd:
 
-DigitsGraphics:
-	INCBIN "gfx/digits.2bpp"
-DigitsGraphicsEnd:
-
 ScoreStreakGraphics:
 	INCBIN "gfx/scorestreak.2bpp"
 ScoreStreakGraphicsEnd:
+
+BombGraphics:
+	INCBIN "gfx/bomb.2bpp"
+BombGraphicsEnd:
+
+DigitsGraphics:
+	INCBIN "gfx/digits.2bpp"
+DigitsGraphicsEnd:
