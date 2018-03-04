@@ -207,7 +207,6 @@ LevelScreen::
 	ld [hli], a
 	ld [hli], a
 	ld [hli], a
-	call IncrementStreak
 	call IncrementScore
 	jr .yes
 .no
