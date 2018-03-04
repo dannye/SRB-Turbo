@@ -4,6 +4,11 @@ wCh0Pitch: ds 1
 wCh0Length: ds 1
 wCh0Octave: ds 1
 
+wCh1Ptr: ds 2
+wCh1Pitch: ds 1
+wCh1Length: ds 1
+wCh1Octave: ds 1
+
 section "sound", rom0
 C_: macro
 	db 0
@@ -80,8 +85,10 @@ InitSound::
 	ld [rNR52], a
 	;ld a, %10000000
 	ld [rNR11], a ; duty
+	ld [rNR21], a ; duty
 	ld a, %11110011
 	ld [rNR12], a ; volume
+	ld [rNR22], a ; volume
 	ld a, %11111111
 	ld [rNR51], a ; 
 	ld a, $77
@@ -90,12 +97,15 @@ InitSound::
 	;ld [rNR10], a
 	ld a, $40
 	ld [rNR14], a ; counter mode
-	;ld [rNR24], a
+	ld [rNR24], a
 	;ld [rNR44], a
-	;ld a, $77
-	;ld [rNR50], a
-	ld hl, One
-StartNextNote:
+	ld hl, SongData
+	call Ch0NextNote
+	ld hl, EasySongMain
+	call Ch1NextNote
+	ret
+
+Ch0NextNote:
 	ld a, [hli]
 	cp 13
 	jr nz, .notOctave
@@ -136,7 +146,7 @@ StartNextNote:
 	ld [rNR14], a
 	ret
 
-PlaySound:
+Ch0UpdateSound:
 	ld a, [wCh0Pitch]
 	cp $FF
 	ret z
@@ -151,7 +161,66 @@ PlaySound:
 	ld l, a
 	ld a, [wCh0Ptr + 1]
 	ld h, a
-	call StartNextNote
+	call Ch0NextNote
+	ret
+
+Ch1NextNote:
+	ld a, [hli]
+	cp 13
+	jr nz, .notOctave
+	ld a, [hli]
+	ld [wCh1Octave], a
+	ld a, [hli]
+.notOctave
+	ld [wCh1Pitch], a
+	cp $FF
+	ret z
+	ld c, a
+	ld a, [hli]
+	ld [wCh1Length], a
+	ld a, l
+	ld [wCh1Ptr], a
+	ld a, h
+	ld [wCh1Ptr + 1], a
+	ld a, [wCh1Octave]
+	ld b, a
+	ld a, c
+	cp 12
+	jr z, .rest
+	call CalculateFrequency
+	ld a, [rNR51]
+	or %00100010
+	ld [rNR51], a
+	ld a, e
+	ld [rNR23], a
+	ld a, d
+	ld [rNR24], a
+	ret
+.rest
+	ld a, [rNR51]
+	and %11011101
+	ld [rNR51], a
+	xor a
+	ld [rNR23], a
+	ld [rNR24], a
+	ret
+
+Ch1UpdateSound:
+	ld a, [wCh1Pitch]
+	cp $FF
+	ret z
+	ld a, [wCh1Length]
+	and a
+	jr z, .nextNote
+	dec a
+	ld [wCh1Length], a
+	ret
+.nextNote
+	ld a, [wCh1Ptr]
+	ld l, a
+	ld a, [wCh1Ptr + 1]
+	ld h, a
+	call Ch1NextNote
 	ret
 
 CalculateFrequency:

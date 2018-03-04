@@ -34,7 +34,8 @@ LevelScreen::
 	callback ToggleIcons
 	callback DrawScore
 	callback DrawStreak
-	callback PlaySound
+	callback Ch0UpdateSound
+	callback Ch1UpdateSound
 
 .checkNotesLoop
 	ld a, [wNextNote]
