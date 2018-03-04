@@ -45,6 +45,7 @@ LevelScreen::
 	callback DrawStreak
 	call Ch0UpdateSound
 	call Ch1UpdateSound
+	call Joypad
 
 .checkNotesLoop
 	ld a, [wNextNote]
@@ -228,6 +229,24 @@ LevelScreen::
 	dec c
 	jr nz, .explosionLoop
 .skip7
+	ld a, [wJoyPressed]
+	bit START_F, a
+	jr z, .skip8
+	;;; pause the game
+	ld a, [rNR51]
+	push af
+	xor a
+	ld [rNR51], a
+	call WaitVBlank
+.pauseLoop
+	call WaitVBlank
+	call Joypad
+	ld a, [wJoyPressed]
+	bit START_F, a
+	jr z, .pauseLoop
+	pop af
+	ld [rNR51], a
+.skip8
 	jp .loop
 
 ; input: x-coord of left edge of hitbox in reg a
@@ -918,7 +937,6 @@ RussianFolkNotes:
 	db $FF, $FF
 
 ToggleIcons:
-	call Joypad
 	ld bc, 0
 	ld a, [wJoy]
 	bit D_LEFT_F, a
