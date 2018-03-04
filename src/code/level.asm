@@ -293,13 +293,13 @@ LevelScreen::
 	jp .loop
 
 wQuitOAM:
-	db 113, 128, 07, 00
-	db 88, 128, 01, 00
-	db 88, 136, 02, 00
-	db 88, 144, 03, 00
-	db 88, 156, 04, 00
-	db 104, 128, 05, 00
-	db 104, 156, 06, 00
+	db 121, 128, 07, 00
+	db 96, 128, 01, 00
+	db 96, 136, 02, 00
+	db 96, 144, 03, 00
+	db 96, 156, 04, 00
+	db 112, 128, 05, 00
+	db 112, 156, 06, 00
 wQuitOAMEnd:
 
 ; input: x-coord of left edge of hitbox in reg a
